@@ -3,6 +3,21 @@
   const sizeKey = "archive-text-size";
   const sizeControls = document.querySelectorAll("[data-text-size]");
   const allowedSizes = new Set(["small", "default", "large"]);
+  const readStoredValue = (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+  const storeValue = (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   const applySize = (requestedSize) => {
     const size = allowedSizes.has(requestedSize) ? requestedSize : "default";
@@ -12,11 +27,11 @@
     });
   };
 
-  applySize(localStorage.getItem(sizeKey) || "default");
+  applySize(readStoredValue(sizeKey) || "default");
   sizeControls.forEach((control) => {
     control.addEventListener("click", () => {
       const size = control.dataset.textSize || "default";
-      localStorage.setItem(sizeKey, size);
+      storeValue(sizeKey, size);
       applySize(size);
     });
   });
@@ -102,5 +117,128 @@
       return;
     }
     if (event.key === "Escape") closeSidebar();
+  });
+
+  const engagement = document.querySelector("[data-post-engagement]");
+  if (!engagement) return;
+
+  const track = (eventName, eventData) => {
+    if (window.umami && typeof window.umami.track === "function") {
+      window.umami.track(eventName, eventData);
+    }
+  };
+
+  const recordedDepths = new Set();
+  const depthMilestones = [25, 50, 75, 100];
+  let scrollFramePending = false;
+  const recordScrollDepth = () => {
+    scrollFramePending = false;
+    const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const depth = scrollableHeight <= 0 ? 100 : (window.scrollY / scrollableHeight) * 100;
+    depthMilestones.forEach((milestone) => {
+      if (depth >= milestone && !recordedDepths.has(milestone)) {
+        recordedDepths.add(milestone);
+        track("Post scroll", { depth: milestone });
+      }
+    });
+  };
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (scrollFramePending) return;
+      scrollFramePending = true;
+      window.requestAnimationFrame(recordScrollDepth);
+    },
+    { passive: true },
+  );
+  recordScrollDepth();
+
+  const actionStatus = engagement.querySelector("[data-post-action-status]");
+  const setActionStatus = (message) => {
+    if (actionStatus) actionStatus.textContent = message;
+  };
+  engagement.querySelector("[data-share-post]")?.addEventListener("click", async () => {
+    try {
+      if (typeof navigator.share === "function") {
+        await navigator.share({ title: document.title, url: window.location.href });
+        setActionStatus("공유 창을 열었습니다.");
+      } else if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(window.location.href);
+        setActionStatus("링크를 복사했습니다.");
+      } else {
+        setActionStatus("주소창의 링크를 복사해 주세요.");
+        return;
+      }
+      track("Post share");
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        setActionStatus("공유하지 못했습니다. 다시 시도해 주세요.");
+      }
+    }
+  });
+
+  const config = window.ARCHIVE_CONFIG || {};
+  const supabaseUrl = typeof config.supabaseUrl === "string" ? config.supabaseUrl : "";
+  const supabaseAnonKey =
+    typeof config.supabaseAnonKey === "string" ? config.supabaseAnonKey : "";
+  const likeButton = engagement.querySelector("[data-like-post]");
+  const likeCount = engagement.querySelector("[data-like-count]");
+  const postId = Number.parseInt(engagement.dataset.postId || "", 10);
+  if (!supabaseUrl || !supabaseAnonKey || !likeButton || !likeCount || !Number.isInteger(postId)) {
+    return;
+  }
+
+  const visitorKey = "archive-like-visitor-id";
+  let visitorId = readStoredValue(visitorKey);
+  if (!visitorId && typeof crypto.randomUUID === "function") {
+    const candidate = crypto.randomUUID();
+    if (storeValue(visitorKey, candidate)) visitorId = candidate;
+  }
+  if (!visitorId) return;
+
+  const callLikesApi = async (functionName, payload) => {
+    const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${functionName}`, {
+      method: "POST",
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error(`likes API returned ${response.status}`);
+    return response.json();
+  };
+  const applyLikeState = (payload) => {
+    const count = Number(payload.count);
+    const liked = payload.liked === true;
+    likeCount.textContent = Number.isFinite(count)
+      ? new Intl.NumberFormat("ko-KR").format(count)
+      : "0";
+    likeButton.setAttribute("aria-pressed", String(liked));
+    likeButton.disabled = liked;
+    likeButton.hidden = false;
+  };
+
+  callLikesApi("get_post_like_status", { target_post_id: postId, visitor_id: visitorId })
+    .then(applyLikeState)
+    .catch(() => {
+      likeButton.hidden = true;
+    });
+
+  likeButton.addEventListener("click", async () => {
+    likeButton.disabled = true;
+    try {
+      const payload = await callLikesApi("register_post_like", {
+        target_post_id: postId,
+        visitor_id: visitorId,
+      });
+      applyLikeState(payload);
+      setActionStatus("고맙습니다. 좋아요가 반영되었습니다.");
+      if (payload.created === true) track("Post like");
+    } catch {
+      likeButton.disabled = false;
+      setActionStatus("좋아요를 반영하지 못했습니다. 다시 시도해 주세요.");
+    }
   });
 })();

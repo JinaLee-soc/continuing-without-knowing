@@ -1141,6 +1141,94 @@ kbd {
   line-height: 1.9;
 }
 
+.post-engagement {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 24px;
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.post-engagement-kicker,
+.post-engagement h2,
+.post-action-status {
+  margin: 0;
+}
+
+.post-engagement-kicker {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.post-engagement h2 {
+  margin-top: 4px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.post-engagement-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-action {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.post-action:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  color: var(--color-navy);
+}
+
+.post-action[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  color: var(--color-navy);
+}
+
+.post-action:disabled {
+  cursor: default;
+}
+
+.post-action[hidden] {
+  display: none;
+}
+
+.post-like strong {
+  min-width: 2ch;
+  padding-left: 10px;
+  border-left: 1px solid var(--color-border);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.post-action-status {
+  min-height: 18px;
+  grid-column: 1 / -1;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
 .license-note {
   margin-top: 66px;
   padding: 20px;
@@ -1338,6 +1426,19 @@ kbd {
     font-size: 16px;
   }
 
+  .post-engagement {
+    grid-template-columns: 1fr;
+  }
+
+  .post-engagement-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .post-action {
+    justify-content: space-between;
+  }
+
   .doc-card p {
     display: none;
   }
@@ -1363,7 +1464,8 @@ kbd {
 @media print {
   .docs-header,
   .docs-sidebar,
-  .docs-toc {
+  .docs-toc,
+  .post-engagement {
     display: none;
   }
 
