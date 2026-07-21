@@ -428,6 +428,7 @@ select {
   font-size: calc(18px * var(--reading-scale));
   line-height: 1.95;
   white-space: pre-wrap;
+  text-wrap: pretty;
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -987,6 +988,7 @@ kbd {
 }
 
 .doc-card {
+  min-width: 0;
   min-height: 160px;
   padding: 20px;
   border: 1px solid var(--color-border);
@@ -1017,10 +1019,14 @@ kbd {
 }
 
 .doc-card p {
+  overflow: hidden;
   margin: 9px 0 0;
   color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 1.65;
+  text-overflow: ellipsis;
+  text-wrap: pretty;
+  white-space: nowrap;
   word-break: keep-all;
 }
 
@@ -1072,6 +1078,7 @@ kbd {
   font-size: 12px;
   line-height: 1.5;
   text-overflow: ellipsis;
+  text-wrap: pretty;
   white-space: nowrap;
 }
 
@@ -1324,6 +1331,10 @@ kbd {
 
   .docs-lead {
     font-size: 16px;
+  }
+
+  .doc-card p {
+    display: none;
   }
 
   .doc-section-head {
