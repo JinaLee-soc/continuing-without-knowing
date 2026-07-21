@@ -44,7 +44,7 @@ body[data-text-size="small"] {
 }
 
 body[data-text-size="large"] {
-  --reading-scale: 1.1;
+  --reading-scale: 1.08;
 }
 
 a {
@@ -917,7 +917,7 @@ kbd {
   max-width: 680px;
   margin: 20px 0 0;
   color: var(--color-text-secondary);
-  font-size: 18px;
+  font-size: calc(18px * var(--reading-scale));
   letter-spacing: -0.012em;
   line-height: 1.8;
   text-wrap: pretty;
@@ -1030,7 +1030,7 @@ kbd {
   overflow: hidden;
   margin: 9px 0 0;
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: calc(12px * var(--reading-scale));
   line-height: 1.65;
   text-overflow: ellipsis;
   text-wrap: pretty;
@@ -1083,7 +1083,7 @@ kbd {
 .doc-list small {
   overflow: hidden;
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: calc(12px * var(--reading-scale));
   line-height: 1.5;
   text-overflow: ellipsis;
   text-wrap: pretty;
@@ -1250,8 +1250,10 @@ kbd {
 .license-note p {
   margin: 8px 0 0;
   color: var(--color-text-secondary);
-  font-size: 11px;
+  font-size: calc(11px * var(--reading-scale));
   line-height: 1.75;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 .search-dialog {
@@ -1381,10 +1383,6 @@ kbd {
     grid-column: 3;
   }
 
-  .docs-header .text-size button:first-of-type {
-    display: none;
-  }
-
   .docs-shell {
     grid-template-columns: 1fr;
     padding-top: 106px;
@@ -1428,7 +1426,7 @@ kbd {
   }
 
   .docs-lead {
-    font-size: 16px;
+    font-size: calc(16px * var(--reading-scale));
   }
 
   .post-engagement {
