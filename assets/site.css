@@ -3,7 +3,7 @@
   --color-surface: #ffffff;
   --color-text: #252b30;
   --color-text-secondary: #59636b;
-  --color-text-muted: #7f8a92;
+  --color-text-muted: #667179;
   --color-accent: #526b7d;
   --color-accent-hover: #3e5566;
   --color-accent-light: #eef2f4;
@@ -639,7 +639,8 @@ select {
   .post-body {
     font-size: calc(17px * var(--reading-scale));
     line-height: 1.9;
-    word-break: normal;
+    overflow-wrap: break-word;
+    word-break: keep-all;
   }
 
   .post-nav {
@@ -1317,7 +1318,8 @@ kbd {
 @media (max-width: 520px) {
   .docs-landing h1,
   .docs-document h1 {
-    font-size: 35px;
+    font-size: 33px;
+    text-wrap: balance;
   }
 
   .docs-lead {
@@ -1336,7 +1338,9 @@ kbd {
 
   .doc-list strong,
   .doc-list small {
+    overflow-wrap: break-word;
     white-space: normal;
+    word-break: keep-all;
   }
 }
 
