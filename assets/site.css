@@ -920,7 +920,12 @@ kbd {
   font-size: 18px;
   letter-spacing: -0.012em;
   line-height: 1.8;
+  text-wrap: pretty;
   word-break: keep-all;
+}
+
+.keep-together {
+  white-space: nowrap;
 }
 
 .search-callout {
