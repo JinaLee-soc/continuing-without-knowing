@@ -10,8 +10,10 @@
   --color-navy: #3e536d;
   --color-border: #dfe5e9;
   --color-border-light: #edf1f3;
-  --font-serif: "Noto Serif KR", "Nanum Myeongjo", AppleMyungjo, serif;
-  --font-sans: Inter, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+  --font-korean: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", system-ui, sans-serif;
+  --font-serif: var(--font-korean);
+  --font-sans: var(--font-korean);
   --max-reading: 760px;
   --max-wide: 1000px;
   --reading-scale: 1;
@@ -28,6 +30,7 @@ html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -899,9 +902,9 @@ kbd {
   margin: 0;
   font-family: var(--font-serif);
   font-size: clamp(36px, 5vw, 50px);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.28;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.25;
   word-break: keep-all;
 }
 
@@ -909,9 +912,9 @@ kbd {
   max-width: 680px;
   margin: 20px 0 0;
   color: var(--color-text-secondary);
-  font-family: var(--font-serif);
   font-size: 18px;
-  line-height: 1.85;
+  letter-spacing: -0.012em;
+  line-height: 1.8;
   word-break: keep-all;
 }
 
@@ -1121,6 +1124,8 @@ kbd {
 
 .docs-document .post-body {
   margin-top: 42px;
+  letter-spacing: -0.012em;
+  line-height: 1.9;
 }
 
 .license-note {
