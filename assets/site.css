@@ -1242,26 +1242,8 @@ kbd {
   border-top: 1px solid var(--color-border);
 }
 
-.post-engagement-kicker,
-.post-engagement h2,
 .post-action-status {
   margin: 0;
-}
-
-.post-engagement-kicker {
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-
-.post-engagement h2 {
-  margin-top: 4px;
-  font-family: var(--font-serif);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.55;
-  word-break: keep-all;
 }
 
 .post-engagement-actions {
