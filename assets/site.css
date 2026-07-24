@@ -1270,6 +1270,14 @@ kbd {
   color: white;
 }
 
+.ebook-file-link {
+  margin: 16px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
 .ebook-body {
   white-space: normal;
 }
