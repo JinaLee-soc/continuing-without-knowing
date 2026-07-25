@@ -1380,6 +1380,10 @@ kbd {
   line-height: 1.65;
 }
 
+.post-action-status:empty {
+  display: none;
+}
+
 .license-note {
   margin-top: 66px;
   padding: 20px;
