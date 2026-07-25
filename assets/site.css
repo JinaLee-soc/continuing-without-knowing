@@ -1364,27 +1364,12 @@ kbd {
   color: var(--color-navy);
 }
 
-.post-action[aria-pressed="true"] {
-  border-color: var(--color-accent);
-  background: var(--color-accent-light);
-  color: var(--color-navy);
-}
-
 .post-action:disabled {
   cursor: default;
 }
 
 .post-action[hidden] {
   display: none;
-}
-
-.post-like strong {
-  min-width: 2ch;
-  padding-left: 10px;
-  border-left: 1px solid var(--color-border);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
 }
 
 .post-action-status {
