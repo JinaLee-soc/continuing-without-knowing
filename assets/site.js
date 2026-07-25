@@ -119,6 +119,61 @@
     if (event.key === "Escape") closeSidebar();
   });
 
+  const config = window.ARCHIVE_CONFIG || {};
+  const supabaseUrl = typeof config.supabaseUrl === "string" ? config.supabaseUrl : "";
+  const supabaseAnonKey =
+    typeof config.supabaseAnonKey === "string" ? config.supabaseAnonKey : "";
+  const callArchiveApi = async (functionName, payload, options = {}) => {
+    const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${functionName}`, {
+      method: "POST",
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      keepalive: options.keepalive === true,
+    });
+    if (!response.ok) throw new Error(`archive API returned ${response.status}`);
+    return response.json();
+  };
+
+  const ebookDownloadButton = document.querySelector("[data-ebook-download]");
+  const ebookDownloadCounter = document.querySelector("[data-ebook-download-counter]");
+  const ebookDownloadCount = document.querySelector("[data-ebook-download-count]");
+  const ebookKey = ebookDownloadButton?.dataset.ebookKey || "";
+  if (
+    supabaseUrl &&
+    supabaseAnonKey &&
+    ebookDownloadButton &&
+    ebookDownloadCounter &&
+    ebookDownloadCount &&
+    ebookKey
+  ) {
+    const applyDownloadCount = (payload) => {
+      const count = Number(payload.count);
+      if (!Number.isFinite(count)) return;
+      ebookDownloadCount.textContent = new Intl.NumberFormat("ko-KR").format(count);
+      ebookDownloadCounter.hidden = false;
+    };
+
+    callArchiveApi("get_ebook_download_count", { target_book_key: ebookKey })
+      .then(applyDownloadCount)
+      .catch(() => {
+        ebookDownloadCounter.hidden = true;
+      });
+
+    ebookDownloadButton.addEventListener("click", () => {
+      callArchiveApi(
+        "register_ebook_download",
+        { target_book_key: ebookKey },
+        { keepalive: true },
+      )
+        .then(applyDownloadCount)
+        .catch(() => {});
+    });
+  }
+
   const engagement = document.querySelector("[data-post-engagement]");
   if (!engagement) return;
 
@@ -177,10 +232,6 @@
     }
   });
 
-  const config = window.ARCHIVE_CONFIG || {};
-  const supabaseUrl = typeof config.supabaseUrl === "string" ? config.supabaseUrl : "";
-  const supabaseAnonKey =
-    typeof config.supabaseAnonKey === "string" ? config.supabaseAnonKey : "";
   const likeButton = engagement.querySelector("[data-like-post]");
   const likeCount = engagement.querySelector("[data-like-count]");
   const postId = Number.parseInt(engagement.dataset.postId || "", 10);
@@ -196,19 +247,6 @@
   }
   if (!visitorId) return;
 
-  const callLikesApi = async (functionName, payload) => {
-    const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${functionName}`, {
-      method: "POST",
-      headers: {
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) throw new Error(`likes API returned ${response.status}`);
-    return response.json();
-  };
   const applyLikeState = (payload) => {
     const count = Number(payload.count);
     const liked = payload.liked === true;
@@ -220,7 +258,7 @@
     likeButton.hidden = false;
   };
 
-  callLikesApi("get_post_like_status", { target_post_id: postId, visitor_id: visitorId })
+  callArchiveApi("get_post_like_status", { target_post_id: postId, visitor_id: visitorId })
     .then(applyLikeState)
     .catch(() => {
       likeButton.hidden = true;
@@ -229,7 +267,7 @@
   likeButton.addEventListener("click", async () => {
     likeButton.disabled = true;
     try {
-      const payload = await callLikesApi("register_post_like", {
+      const payload = await callArchiveApi("register_post_like", {
         target_post_id: postId,
         visitor_id: visitorId,
       });

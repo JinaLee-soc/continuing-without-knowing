@@ -1270,12 +1270,16 @@ kbd {
   color: white;
 }
 
-.ebook-file-link {
-  margin: 16px 0 0;
+.ebook-download-count {
+  margin: 14px 0 0;
   color: var(--color-text-secondary);
   font-size: 12px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.ebook-download-count strong {
+  color: var(--color-navy);
+  font-variant-numeric: tabular-nums;
 }
 
 .ebook-body {
