@@ -138,18 +138,22 @@
     return response.json();
   };
 
-  const ebookDownloadButton = document.querySelector("[data-ebook-download]");
-  const ebookDownloadCounter = document.querySelector("[data-ebook-download-counter]");
-  const ebookDownloadCount = document.querySelector("[data-ebook-download-count]");
-  const ebookKey = ebookDownloadButton?.dataset.ebookKey || "";
-  if (
-    supabaseUrl &&
-    supabaseAnonKey &&
-    ebookDownloadButton &&
-    ebookDownloadCounter &&
-    ebookDownloadCount &&
-    ebookKey
-  ) {
+  document.querySelectorAll("[data-ebook-resource]").forEach((resource) => {
+    const ebookDownloadButton = resource.querySelector("[data-ebook-download]");
+    const ebookDownloadCounter = resource.querySelector("[data-ebook-download-counter]");
+    const ebookDownloadCount = resource.querySelector("[data-ebook-download-count]");
+    const ebookKey = ebookDownloadButton?.dataset.ebookKey || "";
+    if (
+      !supabaseUrl ||
+      !supabaseAnonKey ||
+      !ebookDownloadButton ||
+      !ebookDownloadCounter ||
+      !ebookDownloadCount ||
+      !ebookKey
+    ) {
+      return;
+    }
+
     const applyDownloadCount = (payload) => {
       const count = Number(payload.count);
       if (!Number.isFinite(count)) return;
@@ -172,7 +176,7 @@
         .then(applyDownloadCount)
         .catch(() => {});
     });
-  }
+  });
 
   const engagement = document.querySelector("[data-post-engagement]");
   if (!engagement) return;

@@ -1241,18 +1241,37 @@ kbd {
 }
 
 .ebook-download-panel .doc-section-head {
-  margin-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.ebook-resource-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.ebook-resource {
+  min-width: 0;
+}
+
+.ebook-resource-title {
+  margin: 0 0 8px;
+  color: var(--color-navy);
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .ebook-meta {
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   color: var(--color-text-secondary);
   font-size: 13px;
 }
 
 .ebook-download-button {
-  display: inline-flex;
+  display: flex;
+  width: 100%;
   min-height: 44px;
+  box-sizing: border-box;
   align-items: center;
   justify-content: space-between;
   gap: 28px;
@@ -1556,6 +1575,10 @@ kbd {
   }
 
   .featured-chapter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ebook-resource-list {
     grid-template-columns: 1fr;
   }
 
