@@ -776,6 +776,43 @@ kbd {
   grid-column: 4;
 }
 
+.docs-header--standalone {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.docs-header--standalone .text-size {
+  grid-column: 3;
+}
+
+.header-language-nav,
+.ebook-language-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.header-language-nav a,
+.ebook-language-switch a,
+.header-language-nav span,
+.ebook-language-switch span {
+  padding: 5px 8px;
+  text-decoration: none;
+}
+
+.header-language-nav a:hover,
+.ebook-language-switch a:hover {
+  color: var(--color-navy);
+}
+
+.header-language-nav [aria-current="page"],
+.ebook-language-switch [aria-current="page"] {
+  background: var(--color-accent-light);
+  color: var(--color-navy);
+  font-weight: 700;
+}
+
 .sidebar-toggle {
   display: none;
   border: 1px solid var(--color-border);
@@ -791,6 +828,10 @@ kbd {
   min-height: 100vh;
   grid-template-columns: 260px minmax(0, 1fr) 190px;
   padding-top: 60px;
+}
+
+.docs-shell--standalone {
+  grid-template-columns: minmax(0, 1fr) 190px;
 }
 
 .docs-sidebar {
@@ -1240,6 +1281,41 @@ kbd {
   background: var(--color-accent-light);
 }
 
+.ebook-language-switch {
+  width: max-content;
+  margin: 0 0 22px;
+}
+
+.ebook-document--en h1 {
+  letter-spacing: -0.035em;
+  word-break: normal;
+}
+
+.ebook-lead {
+  max-width: 680px;
+  margin: 20px 0 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-serif);
+  font-size: calc(20px * var(--reading-scale));
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.ebook-edition-note {
+  margin: 7px 0 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.ebook-byline {
+  margin: 15px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 .ebook-download-panel .doc-section-head {
   margin-bottom: 20px;
 }
@@ -1248,6 +1324,10 @@ kbd {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px;
+}
+
+.ebook-resource-list--single {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .ebook-resource {
@@ -1502,6 +1582,10 @@ kbd {
     grid-template-columns: 240px minmax(0, 1fr);
   }
 
+  .docs-shell--standalone {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .docs-toc {
     display: none;
   }
@@ -1533,9 +1617,21 @@ kbd {
     grid-column: 3;
   }
 
+  .docs-header--standalone {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .docs-header--standalone .text-size {
+    display: none;
+  }
+
   .docs-shell {
     grid-template-columns: 1fr;
     padding-top: 106px;
+  }
+
+  .docs-shell--standalone {
+    padding-top: 58px;
   }
 
   .docs-sidebar {

@@ -123,6 +123,8 @@
   const supabaseUrl = typeof config.supabaseUrl === "string" ? config.supabaseUrl : "";
   const supabaseAnonKey =
     typeof config.supabaseAnonKey === "string" ? config.supabaseAnonKey : "";
+  const downloadNumberLocale =
+    document.documentElement.lang.toLowerCase() === "en" ? "en-US" : "ko-KR";
   const callArchiveApi = async (functionName, payload, options = {}) => {
     const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${functionName}`, {
       method: "POST",
@@ -157,7 +159,7 @@
     const applyDownloadCount = (payload) => {
       const count = Number(payload.count);
       if (!Number.isFinite(count)) return;
-      ebookDownloadCount.textContent = new Intl.NumberFormat("ko-KR").format(count);
+      ebookDownloadCount.textContent = new Intl.NumberFormat(downloadNumberLocale).format(count);
       ebookDownloadCounter.hidden = false;
     };
 
