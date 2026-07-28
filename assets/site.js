@@ -123,6 +123,11 @@
   const supabaseUrl = typeof config.supabaseUrl === "string" ? config.supabaseUrl : "";
   const supabaseAnonKey =
     typeof config.supabaseAnonKey === "string" ? config.supabaseAnonKey : "";
+  const track = (eventName, eventData) => {
+    if (window.umami && typeof window.umami.track === "function") {
+      window.umami.track(eventName, eventData);
+    }
+  };
   const downloadNumberLocale =
     document.documentElement.lang.toLowerCase() === "en" ? "en-US" : "ko-KR";
   const callArchiveApi = async (functionName, payload, options = {}) => {
@@ -180,14 +185,97 @@
     });
   });
 
+  document.querySelectorAll("[data-book-feedback]").forEach((form) => {
+    const messageField = form.querySelector('textarea[name="feedback"]');
+    const websiteField = form.querySelector('input[name="website"]');
+    const submitButton = form.querySelector("[data-feedback-submit]");
+    const status = form.querySelector("[data-feedback-status]");
+    const language = form.dataset.bookLanguage === "en" ? "en" : "ko";
+    const version = form.dataset.bookVersion || "";
+    const feedbackEndpoint = `${supabaseUrl}/functions/v1/submit-book-feedback`;
+    const cooldownKey = "archive-book-feedback-last-sent";
+    let startedAt = Date.now();
+
+    const messages =
+      language === "en"
+        ? {
+            sending: "Sending...",
+            success: "Thank you. Your feedback has been sent.",
+            unavailable: "Feedback is temporarily unavailable. Please try again later.",
+            cooldown: "Your feedback was sent recently. Please wait a minute before sending more.",
+          }
+        : {
+            sending: "보내는 중...",
+            success: "감사합니다. 피드백을 보냈습니다.",
+            unavailable: "지금은 피드백을 보낼 수 없습니다. 잠시 후 다시 시도해 주세요.",
+            cooldown: "방금 피드백을 보냈습니다. 잠시 후 다시 보내 주세요.",
+          };
+
+    const setFeedbackStatus = (message, state = "") => {
+      if (!status) return;
+      status.textContent = message;
+      if (state) {
+        status.dataset.state = state;
+      } else {
+        delete status.dataset.state;
+      }
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (
+        !supabaseUrl ||
+        !supabaseAnonKey ||
+        !(messageField instanceof HTMLTextAreaElement) ||
+        !(websiteField instanceof HTMLInputElement) ||
+        !(submitButton instanceof HTMLButtonElement)
+      ) {
+        setFeedbackStatus(messages.unavailable, "error");
+        return;
+      }
+
+      const lastSent = Number(readStoredValue(cooldownKey) || 0);
+      if (Number.isFinite(lastSent) && Date.now() - lastSent < 60_000) {
+        setFeedbackStatus(messages.cooldown, "error");
+        return;
+      }
+
+      submitButton.disabled = true;
+      setFeedbackStatus(messages.sending);
+      try {
+        const response = await fetch(feedbackEndpoint, {
+          method: "POST",
+          headers: {
+            apikey: supabaseAnonKey,
+            Authorization: `Bearer ${supabaseAnonKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            feedback: messageField.value,
+            website: websiteField.value,
+            startedAt,
+            language,
+            version,
+            pageUrl: window.location.href.split("#", 1)[0],
+          }),
+        });
+        if (!response.ok) throw new Error(`feedback API returned ${response.status}`);
+
+        form.reset();
+        startedAt = Date.now();
+        storeValue(cooldownKey, String(Date.now()));
+        setFeedbackStatus(messages.success, "success");
+        track("Book feedback sent", { language, version });
+      } catch {
+        setFeedbackStatus(messages.unavailable, "error");
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  });
+
   const engagement = document.querySelector("[data-post-engagement]");
   if (!engagement) return;
-
-  const track = (eventName, eventData) => {
-    if (window.umami && typeof window.umami.track === "function") {
-      window.umami.track(eventName, eventData);
-    }
-  };
 
   const recordedDepths = new Set();
   const depthMilestones = [25, 50, 75, 100];

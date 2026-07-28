@@ -60,7 +60,8 @@ a:hover {
 
 button,
 input,
-select {
+select,
+textarea {
   color: inherit;
   font: inherit;
 }
@@ -1405,6 +1406,105 @@ kbd {
   margin-top: 20px;
 }
 
+.ebook-feedback {
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+}
+
+.ebook-feedback-form {
+  position: relative;
+  margin-top: 26px;
+}
+
+.ebook-feedback-form > label {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ebook-feedback-form textarea {
+  display: block;
+  width: 100%;
+  min-height: 210px;
+  resize: vertical;
+  padding: 15px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: var(--color-surface);
+  font-size: calc(15px * var(--reading-scale));
+  line-height: 1.7;
+}
+
+.ebook-feedback-form textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.ebook-feedback-form textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.ebook-feedback-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.ebook-feedback-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.ebook-feedback-actions button {
+  min-width: 112px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  background: var(--color-navy);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ebook-feedback-actions button:hover,
+.ebook-feedback-actions button:focus-visible {
+  background: var(--color-accent-hover);
+}
+
+.ebook-feedback-actions button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.ebook-feedback-status {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.ebook-feedback-status[data-state="success"] {
+  color: var(--color-navy);
+  font-weight: 700;
+}
+
+.ebook-feedback-status[data-state="error"] {
+  color: #8b352f;
+}
+
+.ebook-body .ebook-feedback-note {
+  margin-top: 11px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .post-engagement {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1665,6 +1765,11 @@ kbd {
 
   .ebook-resource-list {
     grid-template-columns: 1fr;
+  }
+
+  .ebook-feedback-actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .featured-chapter {
